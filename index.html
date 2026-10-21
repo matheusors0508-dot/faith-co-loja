@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#a85e43">
+  <meta name="description" content="Faith.Co — roupas e artigos cristãos para vestir a fé todos os dias.">
+  <title>Faith.Co — Vista sua fé</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="announcement">FÉ que se veste. PROPÓSITO que se vive. ✦</div>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="Faith.Co página inicial"><span class="brand-mark">F<span>.</span></span><span>Faith<span class="brand-dot">.</span>Co<small>VISTA SUA FÉ</small></span></a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">☰</button>
+    <nav id="mainNav" aria-label="Menu principal">
+      <a href="#colecao">Coleção</a><a href="#manifesto">Nossa essência</a><a href="#artigos">Artigos gospel</a><a href="#contato">Contato</a>
+    </nav>
+    <button class="cart-button" id="openCart" aria-label="Abrir sacola">Sacola <span id="cartCount">0</span></button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">MAIS QUE ROUPA. UMA MENSAGEM.</p>
+        <h1>Vista aquilo<br>em que <em>você crê.</em></h1>
+        <p>Peças que carregam propósito, lembram promessas e expressam a fé no cotidiano.</p>
+        <a class="button button-dark" href="#colecao">Conheça a coleção <span>↗</span></a>
+        <div class="hero-note"><span class="little-cross">✝</span><span>“Tudo quanto fizerdes, fazei-o de todo o coração.”<small>Colossenses 3:23</small></span></div>
+      </div>
+      <div class="hero-art" aria-label="Composição abstrata em tons terrosos">
+        <div class="sun"></div><div class="arch arch-back"></div><div class="arch arch-front"></div>
+        <div class="shirt-shape"><span>FAITH<br><b>OVER FEAR</b></span></div>
+        <div class="hero-stamp">FÉ • PROPÓSITO • VERDADE</div>
+      </div>
+    </section>
+
+    <section class="ticker" aria-label="Valores da marca"><span>FÉ NO DIA A DIA</span><b>✦</b><span>VERDADE QUE PERMANECE</span><b>✦</b><span>VISTA SUA FÉ</span><b>✦</b><span>FEITO COM PROPÓSITO</span></section>
+
+    <section class="section collection" id="colecao">
+      <div class="section-heading"><div><p class="eyebrow">ESCOLHA SUA MENSAGEM</p><h2>Feita para <em>marcar.</em></h2></div><p>Essenciais para quem deseja levar a Palavra para além das paredes da igreja.</p></div>
+      <div class="shop-tools">
+        <div class="filters" role="group" aria-label="Filtrar produtos">
+          <button class="filter active" data-filter="todos">Todos</button><button class="filter" data-filter="blusas">Blusas</button><button class="filter" data-filter="acessorios">Artigos gospel</button>
+        </div>
+        <label class="search-wrap"><span>⌕</span><input id="searchInput" type="search" placeholder="Buscar produto..." aria-label="Buscar produto"></label>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+    </section>
+
+    <section class="manifesto" id="manifesto">
+      <div class="manifesto-shape"><div class="manifesto-circle">F<span>.</span>C</div></div>
+      <div class="manifesto-copy"><p class="eyebrow">NOSSA ESSÊNCIA</p><h2>Não é sobre<br>o que você veste.<br>É sobre <em>o que carrega.</em></h2><p>A Faith.Co nasceu para transformar peças do cotidiano em lembretes visíveis daquilo que sustenta a nossa caminhada: fé, esperança e amor em Cristo.</p><a href="#artigos" class="text-link">Encontre sua mensagem <span>↗</span></a></div>
+    </section>
+
+    <section class="section articles" id="artigos">
+      <div class="section-heading"><div><p class="eyebrow">PEQUENOS LEMBRETES, GRANDE SIGNIFICADO</p><h2>Fé em cada <em>detalhe.</em></h2></div><p>Ideias para presentear e cultivar uma rotina com propósito.</p></div>
+      <div class="article-cards">
+        <article class="article-card card-bible"><div class="line-art">✝</div><div><p class="eyebrow">PALAVRA VIVA</p><h3>Leve a Palavra<br>com você.</h3><a href="#colecao" class="text-link">Explorar artigos ↗</a></div></article>
+        <article class="article-card card-gift"><div class="gift-shape">✦</div><div><p class="eyebrow">PRESENTES COM PROPÓSITO</p><h3>Um presente<br>que fala ao coração.</h3><a href="#colecao" class="text-link">Encontrar um presente ↗</a></div></article>
+      </div>
+    </section>
+
+    <section class="newsletter">
+      <p class="eyebrow">CARTA DA FAITH.CO</p><h2>Uma dose de fé<br>na sua caixa de entrada.</h2><p>Novidades, lançamentos e mensagens para caminhar com propósito.</p>
+      <form id="newsletterForm"><input type="email" id="newsletterEmail" placeholder="Seu melhor e-mail" required aria-label="Seu e-mail"><button type="submit">Quero receber ↗</button></form>
+      <small id="newsletterMessage">Sem spam. Só novidades e boas mensagens.</small>
+    </section>
+  </main>
+
+  <footer id="contato">
+    <div class="footer-main"><a class="brand footer-brand" href="#"><span class="brand-mark">F<span>.</span></span><span>Faith<span class="brand-dot">.</span>Co<small>VISTA SUA FÉ</small></span></a><p>Vista sua fé. Compartilhe esperança.</p><div class="footer-links"><a href="#colecao">Loja</a><a href="#manifesto">Sobre nós</a><a href="https://instagram.com/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="#" id="whatsFooter">WhatsApp ↗</a></div></div>
+    <div class="footer-bottom"><span>© <span id="year"></span> Faith.Co. Todos os direitos reservados.</span><span>Feito com fé e propósito.</span></div>
+  </footer>
+
+  <div class="cart-overlay" id="cartOverlay" hidden></div>
+  <aside class="cart-panel" id="cartPanel" aria-label="Sua sacola" aria-hidden="true">
+    <div class="cart-head"><div><p class="eyebrow">SEU CARRINHO</p><h2>Sacola <span id="cartCountPanel">(0)</span></h2></div><button id="closeCart" aria-label="Fechar sacola" class="close-button">×</button></div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-bottom"><div class="subtotal"><span>Subtotal</span><strong id="cartSubtotal">R$ 0,00</strong></div><p>Frete e prazo serão combinados no atendimento.</p><button class="button button-dark checkout-button" id="checkoutButton">Finalizar pelo WhatsApp ↗</button><small>O pedido só será confirmado após atendimento.</small></div>
+  </aside>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+project_id = "faithco-store"
+
+[functions.create-checkout]
+verify_jwt = false
+
+[functions.mercadopago-webhook]
+verify_jwt = false
+
+[functions.quote-shipping]
+verify_jwt = false
