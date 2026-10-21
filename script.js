@@ -101,7 +101,7 @@ function toggleCart(open) {
 }
 function checkout() {
   if (!cart.length) return showToast("Adicione um produto antes de finalizar.");
-  if (!/^\d{10,15}$/.test(WHATSAPP_NUMBER) || WHATSAPP_NUMBER === "5521988510606") {
+  if (!/^\d{10,15}$/.test(WHATSAPP_NUMBER)) { WHATSAPP_NUMBER === "5521988510606") {
     return showToast("Para testar o checkout, configure seu número de WhatsApp no início do script.js.");
   }
   const lines = cart.map(item => {
