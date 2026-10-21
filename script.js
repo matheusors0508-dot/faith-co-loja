@@ -157,7 +157,6 @@ function initStore() {
   if ($("year")) $("year").textContent = new Date().getFullYear();
   if ($("whatsFooter")) $("whatsFooter").addEventListener("click", event => {
     event.preventDefault();
-    if (WHATSAPP_NUMBER === "5521988510606") return showToast("Configure seu WhatsApp no arquivo script.js.");
     window.location.href = `https://wa.me/${WHATSAPP_NUMBER}`;
   });
   renderProducts();
