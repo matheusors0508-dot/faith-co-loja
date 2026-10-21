@@ -101,9 +101,7 @@ function toggleCart(open) {
 }
 function checkout() {
   if (!cart.length) return showToast("Adicione um produto antes de finalizar.");
-  if (!/^\d{10,15}$/.test(WHATSAPP_NUMBER)) { WHATSAPP_NUMBER === "5521988510606") {
-    return showToast("Para testar o checkout, configure seu número de WhatsApp no início do script.js.");
-  }
+  if (!/^\d{10,15}$/.test(WHATSAPP_NUMBER)) { WHATSAPP_NUMBER === "5521988510606") 
   const lines = cart.map(item => {
     const p = PRODUCTS.find(product => product.id === item.id);
     return `• ${p.name} — ${item.qty}x ${money(p.price)} = ${money(p.price * item.qty)}`;
