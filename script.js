@@ -1,6 +1,6 @@
 // Faith.Co — JavaScript da loja (versão mais robusta para teste no Spck Editor)
 // IMPORTANTE: troque WHATSAPP_NUMBER pelo número real, apenas dígitos, antes de usar o atendimento.
-const WHATSAPP_NUMBER = "5521999999999";
+const WHATSAPP_NUMBER = "5521988510606";
 const PRODUCTS = [
   {id:1,name:"Camiseta Fé Sobre o Medo",category:"blusas",price:79.90,tag:"MAIS VENDIDO",description:"Modelagem confortável • tons naturais",type:"shirt",art:"FAITH<br><small>OVER FEAR</small>",color:"#ead8c4"},
   {id:2,name:"Camiseta Graça Sobre Graça",category:"blusas",price:79.90,tag:"NOVA",description:"Uma mensagem para todos os dias",type:"shirt",art:"GRAÇA<br><small>SOBRE GRAÇA</small>",color:"#c68c70"},
