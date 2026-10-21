@@ -1,0 +1,288 @@
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Minha conta | Faith.Co</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: #f5eee6;
+      color: #382820;
+      font-family: Arial, sans-serif;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      padding: 32px;
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 10px 35px #38282012;
+    }
+    .brand {
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .brand span { color: #a85e43; }
+    .subtitle {
+      text-align: center;
+      color: #76675d;
+      margin-bottom: 24px;
+    }
+    label {
+      display: block;
+      margin: 14px 0 6px;
+      font-size: 14px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d9cec3;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 8px;
+      background: #382820;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    button.secondary {
+      background: #a85e43;
+    }
+    button:disabled { opacity: .6; cursor: wait; }
+    #message {
+      margin-top: 18px;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 24px;
+      color: #80503d;
+    }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="brand">Faith<span>.</span>Co</div>
+    <p class="subtitle">Sua fé também faz parte da sua conta.</p>
+
+    <section id="authForm">
+      <form id="signupForm">
+        <h2>Criar conta</h2>
+
+        <label for="name">Seu nome</label>
+        <input id="name" type="text" autocomplete="name"
+               required maxlength="100">
+
+        <label for="email">E-mail</label>
+        <input id="email" type="email" autocomplete="email"
+               required>
+
+        <label for="password">Senha (mínimo de 8 caracteres)</label>
+        <input id="password" type="password"
+               autocomplete="new-password" minlength="8" required>
+
+        <button type="submit" id="signupButton">Criar minha conta</button>
+      </form>
+
+      <form id="loginForm">
+        <h2>Já tenho conta</h2>
+
+        <label for="loginEmail">E-mail</label>
+        <input id="loginEmail" type="email"
+               autocomplete="email" required>
+
+        <label for="loginPassword">Senha</label>
+        <input id="loginPassword" type="password"
+               autocomplete="current-password" required>
+
+        <button type="submit" class="secondary" id="loginButton">
+          Entrar
+        </button>
+      </form>
+    </section>
+
+    <section id="accountPanel" hidden>
+      <h2>Minha conta</h2>
+      <p id="accountEmail"></p>
+      <button id="logoutButton">Sair da conta</button>
+    </section>
+
+    <p id="message" role="status" aria-live="polite"></p>
+    <a class="back" href="./index.html">← Voltar para a loja</a>
+  </main>
+
+  <script type="module">
+    import { createClient } from
+      "https://esm.sh/@supabase/supabase-js@2";
+
+    // Substitua pelos dados do seu projeto Supabase.
+    const SUPABASE_URL = "https://xuqglrbihmhcrxabustz.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_JhOdkztggQ9P-Fsqmyy1Pw_A1XWFiOE";
+
+    const message = document.getElementById("message");
+    const authForm = document.getElementById("authForm");
+    const accountPanel = document.getElementById("accountPanel");
+    const accountEmail = document.getElementById("accountEmail");
+    const signupButton = document.getElementById("signupButton");
+    const loginButton = document.getElementById("loginButton");
+
+    function showMessage(text, isError = false) {
+      message.textContent = text;
+      message.style.color = isError ? "#b42318" : "#386641";
+    }
+
+    if (
+      SUPABASE_URL.includes("COLE_AQUI") ||
+      SUPABASE_PUBLISHABLE_KEY.includes("COLE_AQUI")
+    ) {
+      showMessage(
+        "Falta configurar a URL e a chave pública do Supabase.",
+        true
+      );
+    } else {
+      try {
+        const supabase = createClient(
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY
+        );
+
+        async function refreshAccount() {
+          const { data, error } = await supabase.auth.getUser();
+
+          if (error && error.name !== "AuthSessionMissingError") {
+            console.error(error);
+          }
+
+          const user = data?.user;
+
+          authForm.hidden = Boolean(user);
+          accountPanel.hidden = !user;
+
+          if (user) {
+            accountEmail.textContent =
+              "Conta conectada: " + user.email;
+          }
+        }
+
+        document.getElementById("signupForm")
+          .addEventListener("submit", async event => {
+            event.preventDefault();
+            signupButton.disabled = true;
+            showMessage("Criando sua conta...");
+
+            try {
+              const name =
+                document.getElementById("name").value.trim();
+              const email =
+                document.getElementById("email").value.trim();
+              const password =
+                document.getElementById("password").value;
+
+              const { data, error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                  data: { full_name: name },
+                  emailRedirectTo: window.location.origin +
+                    window.location.pathname
+                }
+              });
+
+              if (error) throw error;
+
+              if (data.session) {
+                showMessage("Conta criada! Você já está conectado.");
+              } else {
+                showMessage(
+                  "Cadastro enviado! Confira seu e-mail para confirmar a conta."
+                );
+              }
+
+              await refreshAccount();
+            } catch (error) {
+              showMessage(
+                error.message || "Não foi possível criar a conta.",
+                true
+              );
+            } finally {
+              signupButton.disabled = false;
+            }
+          });
+
+        document.getElementById("loginForm")
+          .addEventListener("submit", async event => {
+            event.preventDefault();
+            loginButton.disabled = true;
+            showMessage("Verificando seus dados...");
+
+            try {
+              const email =
+                document.getElementById("loginEmail").value.trim();
+              const password =
+                document.getElementById("loginPassword").value;
+
+              const { error } =
+                await supabase.auth.signInWithPassword({
+                  email,
+                  password
+                });
+
+              if (error) throw error;
+
+              showMessage("Login realizado com sucesso!");
+              await refreshAccount();
+            } catch (error) {
+              showMessage(
+                error.message || "Não foi possível entrar.",
+                true
+              );
+            } finally {
+              loginButton.disabled = false;
+            }
+          });
+
+        document.getElementById("logoutButton")
+          .addEventListener("click", async () => {
+            const { error } = await supabase.auth.signOut();
+
+            if (error) {
+              showMessage(error.message, true);
+              return;
+            }
+
+            showMessage("Você saiu da sua conta.");
+            await refreshAccount();
+          });
+
+        supabase.auth.onAuthStateChange(() => {
+          refreshAccount();
+        });
+
+        refreshAccount();
+      } catch (error) {
+        console.error(error);
+        showMessage("Erro ao iniciar a conexão com o Supabase.", true);
+      }
+    }
+  </script>
+</body>
+</html>
