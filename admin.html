@@ -1,0 +1,801 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administração | Faith.Co</title>
+  <style>
+    :root {
+      --bg: #f6f2ec;
+      --card: #fff;
+      --ink: #29251f;
+      --muted: #746d63;
+      --line: #e5ddd2;
+      --accent: #514437;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background: #29251f;
+      color: white;
+      padding: 20px;
+    }
+
+    header .bar {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    header a { color: white; }
+
+    main {
+      max-width: 1100px;
+      margin: 28px auto;
+      padding: 0 16px 40px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 22px;
+    }
+
+    h1, h2 { margin-top: 0; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #cfc6ba;
+      border-radius: 7px;
+      background: white;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    textarea { resize: vertical; }
+
+    .field { margin-bottom: 14px; }
+
+    .full { grid-column: 1 / -1; }
+
+    button {
+      padding: 11px 16px;
+      border: 0;
+      border-radius: 7px;
+      background: var(--accent);
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: wait;
+    }
+
+    button.secondary {
+      background: #e8e0d5;
+      color: var(--ink);
+    }
+
+    button.danger { background: #a02d2d; }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 7px;
+      margin-bottom: 16px;
+      overflow-wrap: anywhere;
+    }
+
+    .hidden { display: none !important; }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .product {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .product img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background: #eee7de;
+    }
+
+    .product-content { padding: 14px; }
+    .product-content p { overflow-wrap: anywhere; }
+    .muted { color: var(--muted); font-size: 14px; }
+    .price { font-weight: bold; font-size: 18px; }
+    .preview { max-width: 150px; max-height: 150px; margin-top: 8px; }
+    .checkline { display: flex; align-items: center; gap: 8px; }
+    .checkline input { width: auto; }
+
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+      .full { grid-column: auto; }
+      .card { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <div>
+        <strong>Faith.Co</strong>
+        <div class="muted" style="color:#ded5ca">Painel administrativo</div>
+      </div>
+      <div class="actions" style="margin:0">
+        <a href="./index.html">Ver loja</a>
+        <button id="logoutButton" class="secondary hidden">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="status" class="status hidden" role="status"></div>
+
+    <section id="loginSection" class="card">
+      <h1>Acesso administrativo</h1>
+      <p>Entre com sua conta autorizada da Faith.Co.</p>
+      <form id="loginForm">
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input id="email" type="email" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="password">Senha</label>
+          <input id="password" type="password"
+                 autocomplete="current-password" required>
+        </div>
+        <button type="submit">Entrar</button>
+      </form>
+    </section>
+
+    <section id="adminSection" class="hidden">
+      <div class="card">
+        <h1>Produtos da loja</h1>
+        <p>Cadastre produtos, atualize preços e controle a disponibilidade.</p>
+
+        <form id="productForm">
+          <input id="productId" type="hidden">
+
+          <div class="grid">
+            <div class="field">
+              <label for="name">Nome do produto *</label>
+              <input id="name" maxlength="150" required>
+            </div>
+
+            <div class="field">
+              <label for="category">Categoria</label>
+              <input id="category" value="Camisetas" maxlength="100">
+            </div>
+
+            <div class="field">
+              <label for="price">Preço (R$) *</label>
+              <input id="price" type="number" min="0" step="0.01"
+                     inputmode="decimal" required>
+            </div>
+
+            <div class="field">
+              <label for="stock">Quantidade em estoque *</label>
+              <input id="stock" type="number" min="0" step="1"
+                     value="0" required>
+            </div>
+
+            <div class="field full">
+              <label for="description">Descrição</label>
+              <textarea id="description" rows="3" maxlength="3000"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="sizes">Tamanhos, separados por vírgula</label>
+              <input id="sizes" placeholder="P, M, G, GG">
+            </div>
+
+            <div class="field">
+              <label for="colors">Cores, separadas por vírgula</label>
+              <input id="colors" placeholder="Preto, Branco, Bege">
+            </div>
+
+            <div class="field full">
+              <label for="imageFile">Foto do produto</label>
+              <input id="imageFile" type="file"
+                     accept="image/jpeg,image/png,image/webp">
+              <p class="muted">
+                JPG, PNG ou WebP. Máximo de 5 MB. Ao editar, deixe vazio
+                para manter a foto atual.
+              </p>
+              <img id="imagePreview" class="preview hidden" alt="Prévia da foto">
+            </div>
+
+            <div class="field full">
+              <label class="checkline">
+                <input id="active" type="checkbox" checked>
+                Produto ativo e visível na loja
+              </label>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="saveButton" type="submit">Cadastrar produto</button>
+            <button id="cancelButton" class="secondary hidden"
+                    type="button">Cancelar edição</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="bar" style="color:var(--ink)">
+          <h2>Produtos cadastrados</h2>
+          <button id="refreshButton" class="secondary" type="button">
+            Atualizar lista
+          </button>
+        </div>
+        <div id="productsList" class="products"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { createClient } from
+      "https://esm.sh/@supabase/supabase-js@2";
+
+    // Use os mesmos dados públicos já utilizados em conta.html.
+    const SUPABASE_URL = "https://xuqglrbihmhcrxabustz.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_JhOdkztggQ9P-Fsqmyy1Pw_A1XWFiOE";
+
+    const BUCKET = "produtos";
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+    const $ = (id) => document.getElementById(id);
+
+    const statusBox = $("status");
+    const loginSection = $("loginSection");
+    const adminSection = $("adminSection");
+    const logoutButton = $("logoutButton");
+    const productForm = $("productForm");
+    const imageFile = $("imageFile");
+    const imagePreview = $("imagePreview");
+
+    let supabase;
+    let currentUser = null;
+    let products = [];
+    let currentImageUrl = "";
+    let previewObjectUrl = null;
+    let busy = false;
+
+    function showStatus(message, type = "info") {
+      statusBox.textContent = message;
+      statusBox.classList.remove("hidden");
+      statusBox.style.background =
+        type === "error" ? "#fbe8e7" :
+        type === "success" ? "#e5f5e8" : "#eee8df";
+      statusBox.style.color =
+        type === "error" ? "#8a1f1f" :
+        type === "success" ? "#205a2c" : "#29251f";
+    }
+
+    function clearStatus() {
+      statusBox.classList.add("hidden");
+    }
+
+    function setBusy(value) {
+      busy = value;
+      document.querySelectorAll("button").forEach(button => {
+        button.disabled = value;
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function parseList(value) {
+      return value.split(",").map(item => item.trim()).filter(Boolean);
+    }
+
+    function formatPrice(value) {
+      return Number(value).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+      });
+    }
+
+    function releasePreview() {
+      if (previewObjectUrl) {
+        URL.revokeObjectURL(previewObjectUrl);
+        previewObjectUrl = null;
+      }
+    }
+
+    function resetForm() {
+      productForm.reset();
+      $("productId").value = "";
+      $("category").value = "Camisetas";
+      $("stock").value = "0";
+      $("active").checked = true;
+      $("saveButton").textContent = "Cadastrar produto";
+      $("cancelButton").classList.add("hidden");
+      currentImageUrl = "";
+      releasePreview();
+      imagePreview.removeAttribute("src");
+      imagePreview.classList.add("hidden");
+      imageFile.value = "";
+    }
+
+    function getStoragePath(url) {
+      try {
+        const parsed = new URL(url);
+        const marker = "/storage/v1/object/public/" + BUCKET + "/";
+        const index = parsed.pathname.indexOf(marker);
+
+        if (index < 0) return null;
+
+        return decodeURIComponent(
+          parsed.pathname.slice(index + marker.length)
+        );
+      } catch {
+        return null;
+      }
+    }
+
+    async function verifyAdmin() {
+      const { data: { user }, error: userError } =
+        await supabase.auth.getUser();
+
+      if (userError) throw userError;
+      if (!user) return false;
+
+      const { data, error } = await supabase
+        .from("admin_users")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) {
+        throw new Error(
+          "Não foi possível verificar a autorização administrativa: " +
+          error.message
+        );
+      }
+
+      currentUser = user;
+      return Boolean(data);
+    }
+
+    async function showAuthenticatedArea() {
+      const isAdmin = await verifyAdmin();
+
+      if (!isAdmin) {
+        loginSection.classList.remove("hidden");
+        adminSection.classList.add("hidden");
+        logoutButton.classList.remove("hidden");
+        showStatus(
+          "Esta conta não está autorizada a administrar a loja. " +
+          "Confira a tabela admin_users.",
+          "error"
+        );
+        return;
+      }
+
+      loginSection.classList.add("hidden");
+      adminSection.classList.remove("hidden");
+      logoutButton.classList.remove("hidden");
+      clearStatus();
+      await loadProducts();
+    }
+
+    async function loadProducts() {
+      showStatus("Carregando produtos...");
+
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        showStatus("Erro ao carregar produtos: " + error.message, "error");
+        return;
+      }
+
+      products = data ?? [];
+      renderProducts();
+      clearStatus();
+    }
+
+    function renderProducts() {
+      const container = $("productsList");
+
+      if (!products.length) {
+        container.textContent = "Nenhum produto cadastrado ainda.";
+        return;
+      }
+
+      container.innerHTML = products.map(product => {
+        const image = product.image_url
+          ? `<img src="${escapeHtml(product.image_url)}"
+                  alt="${escapeHtml(product.name)}" loading="lazy">`
+          : `<div style="height:220px;display:grid;place-items:center">
+               Sem foto
+             </div>`;
+
+        return `
+          <article class="product">
+            ${image}
+            <div class="product-content">
+              <h3>${escapeHtml(product.name)}</h3>
+              <p class="price">${formatPrice(product.price)}</p>
+              <p class="muted">${escapeHtml(product.category || "Sem categoria")}</p>
+              <p>${product.active ? "Ativo" : "Inativo"} ·
+                 Estoque: ${Number(product.stock)}</p>
+              <p class="muted">
+                Tamanhos: ${escapeHtml((product.sizes || []).join(", ") || "—")}
+              </p>
+              <p class="muted">
+                Cores: ${escapeHtml((product.colors || []).join(", ") || "—")}
+              </p>
+              <div class="actions">
+                <button type="button" data-edit="${escapeHtml(product.id)}">
+                  Editar
+                </button>
+                <button type="button" class="danger"
+                        data-delete="${escapeHtml(product.id)}">
+                  Excluir
+                </button>
+              </div>
+            </div>
+          </article>`;
+      }).join("");
+    }
+
+    async function uploadImage(file) {
+      if (!file) return currentImageUrl;
+
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+
+      if (!allowedTypes.includes(file.type)) {
+        throw new Error("Use uma imagem JPG, PNG ou WebP.");
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        throw new Error("A imagem deve ter no máximo 5 MB.");
+      }
+
+      const extension = ({
+        "image/jpeg": "jpg",
+        "image/png": "png",
+        "image/webp": "webp"
+      })[file.type];
+
+      const path =
+        currentUser.id + "/" + crypto.randomUUID() + "." + extension;
+
+      const { error } = await supabase.storage
+        .from(BUCKET)
+        .upload(path, file, {
+          contentType: file.type,
+          upsert: false
+        });
+
+      if (error) throw error;
+
+      const { data } = supabase.storage
+        .from(BUCKET)
+        .getPublicUrl(path);
+
+      return data.publicUrl;
+    }
+
+    productForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      if (busy) return;
+
+      setBusy(true);
+
+      try {
+        const name = $("name").value.trim();
+        const price = Number($("price").value);
+        const stock = Number($("stock").value);
+
+        if (!name) throw new Error("Informe o nome do produto.");
+        if (!Number.isFinite(price) || price < 0) {
+          throw new Error("Informe um preço válido.");
+        }
+        if (!Number.isInteger(stock) || stock < 0) {
+          throw new Error("Informe uma quantidade válida para o estoque.");
+        }
+
+        const file = imageFile.files[0];
+        const oldImageUrl = currentImageUrl;
+        const imageUrl = await uploadImage(file);
+
+        const product = {
+          name,
+          description: $("description").value.trim(),
+          price,
+          category: $("category").value.trim() || "Camisetas",
+          image_url: imageUrl || null,
+          sizes: parseList($("sizes").value),
+          colors: parseList($("colors").value),
+          stock,
+          active: $("active").checked,
+          updated_at: new Date().toISOString()
+        };
+
+        const productId = $("productId").value;
+        let result;
+
+        if (productId) {
+          result = await supabase
+            .from("products")
+            .update(product)
+            .eq("id", productId)
+            .select("id")
+            .single();
+        } else {
+          result = await supabase
+            .from("products")
+            .insert(product)
+            .select("id")
+            .single();
+        }
+
+        if (result.error) {
+          // A imagem recém-enviada não é removida automaticamente:
+          // assim evitamos apagar arquivos que possam estar em uso.
+          throw result.error;
+        }
+
+        // Remove a foto antiga somente depois de salvar a alteração.
+        if (productId && file && oldImageUrl) {
+          const oldPath = getStoragePath(oldImageUrl);
+          if (oldPath) {
+            const { error: removeError } = await supabase.storage
+              .from(BUCKET)
+              .remove([oldPath]);
+
+            if (removeError) {
+              console.warn("Não foi possível remover a foto antiga.",
+                           removeError.message);
+            }
+          }
+        }
+
+        resetForm();
+        showStatus(
+          productId ? "Produto atualizado com sucesso!" :
+                      "Produto cadastrado com sucesso!",
+          "success"
+        );
+        await loadProducts();
+      } catch (error) {
+        showStatus("Não foi possível salvar: " + error.message, "error");
+      } finally {
+        setBusy(false);
+      }
+    });
+
+    $("productsList").addEventListener("click", async event => {
+      const editButton = event.target.closest("[data-edit]");
+      const deleteButton = event.target.closest("[data-delete]");
+
+      if (editButton) {
+        const product = products.find(
+          item => item.id === editButton.dataset.edit
+        );
+        if (!product) return;
+
+        resetForm();
+        $("productId").value = product.id;
+        $("name").value = product.name ?? "";
+        $("description").value = product.description ?? "";
+        $("price").value = product.price;
+        $("category").value = product.category ?? "";
+        $("stock").value = product.stock ?? 0;
+        $("sizes").value = (product.sizes ?? []).join(", ");
+        $("colors").value = (product.colors ?? []).join(", ");
+        $("active").checked = product.active;
+        currentImageUrl = product.image_url ?? "";
+
+        if (currentImageUrl) {
+          imagePreview.src = currentImageUrl;
+          imagePreview.classList.remove("hidden");
+        }
+
+        $("saveButton").textContent = "Salvar alterações";
+        $("cancelButton").classList.remove("hidden");
+        $("productForm").scrollIntoView({ behavior: "smooth" });
+      }
+
+      if (deleteButton) {
+        const product = products.find(
+          item => item.id === deleteButton.dataset.delete
+        );
+        if (!product) return;
+
+        if (!confirm(
+          `Excluir "${product.name}"? Essa ação não pode ser desfeita.`
+        )) return;
+
+        setBusy(true);
+
+        try {
+          const { error } = await supabase
+            .from("products")
+            .delete()
+            .eq("id", product.id);
+
+          if (error) throw error;
+
+          const path = getStoragePath(product.image_url || "");
+          if (path) {
+            const { error: imageError } = await supabase.storage
+              .from(BUCKET)
+              .remove([path]);
+
+            if (imageError) {
+              console.warn("Produto excluído, mas a foto permaneceu:",
+                           imageError.message);
+            }
+          }
+
+          showStatus("Produto excluído.", "success");
+          await loadProducts();
+        } catch (error) {
+          showStatus("Não foi possível excluir: " + error.message, "error");
+        } finally {
+          setBusy(false);
+        }
+      }
+    });
+
+    $("cancelButton").addEventListener("click", resetForm);
+    $("refreshButton").addEventListener("click", loadProducts);
+
+    imageFile.addEventListener("change", () => {
+      releasePreview();
+
+      const file = imageFile.files[0];
+      if (!file) {
+        imagePreview.classList.toggle("hidden", !currentImageUrl);
+        if (currentImageUrl) imagePreview.src = currentImageUrl;
+        return;
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        showStatus("A imagem deve ter no máximo 5 MB.", "error");
+        imageFile.value = "";
+        return;
+      }
+
+      previewObjectUrl = URL.createObjectURL(file);
+      imagePreview.src = previewObjectUrl;
+      imagePreview.classList.remove("hidden");
+    });
+
+    $("loginForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      if (busy) return;
+
+      setBusy(true);
+
+      try {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: $("email").value.trim(),
+          password: $("password").value
+        });
+
+        if (error) throw error;
+
+        await showAuthenticatedArea();
+      } catch (error) {
+        showStatus("Falha no acesso: " + error.message, "error");
+      } finally {
+        setBusy(false);
+      }
+    });
+
+    logoutButton.addEventListener("click", async () => {
+      setBusy(true);
+      try {
+        const { error } = await supabase.auth.signOut();
+        if (error) throw error;
+
+        currentUser = null;
+        adminSection.classList.add("hidden");
+        loginSection.classList.remove("hidden");
+        logoutButton.classList.add("hidden");
+        resetForm();
+        showStatus("Você saiu da conta.", "success");
+      } catch (error) {
+        showStatus("Não foi possível sair: " + error.message, "error");
+      } finally {
+        setBusy(false);
+      }
+    });
+
+    async function start() {
+      if (
+        SUPABASE_URL.includes("COLE_AQUI") ||
+        SUPABASE_PUBLISHABLE_KEY.includes("COLE_AQUI")
+      ) {
+        showStatus(
+          "Configure a URL e a chave pública do Supabase no código.",
+          "error"
+        );
+        return;
+      }
+
+      try {
+        supabase = createClient(
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY
+        );
+
+        const { data: { session }, error } =
+          await supabase.auth.getSession();
+
+        if (error) throw error;
+
+        if (session) {
+          await showAuthenticatedArea();
+        }
+      } catch (error) {
+        showStatus("Erro ao iniciar o painel: " + error.message, "error");
+      }
+    }
+
+    supabase = null;
+    start();
+  </script>
+</body>
+</html>
